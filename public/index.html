@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elon Tweet</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Top bar: app name (click to go home) + who's logged in. -->
+    <header class="topbar">
+      <h1 id="brand" class="brand">🐦 Elon Tweet</h1>
+      <div id="auth-status" class="auth-status"></div>
+    </header>
+
+    <!-- A small pop-up banner for errors / info. Hidden until app.js fills it. -->
+    <div id="message" class="message"></div>
+
+    <!-- app.js renders the composer, feed, profiles, and login forms in here. -->
+    <main id="main" class="container"></main>
+
+    <!-- All of the app's behavior lives in app.js. -->
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+# Files that should NOT be copied into the Docker image.
+
+# Host dependencies (the image installs its own, for Linux).
+node_modules
+
+# Local secrets / env — the container gets its config from docker-compose.yml.
+.env
+
+# Git and editor noise.
+.git
+.gitignore
+npm-debug.log

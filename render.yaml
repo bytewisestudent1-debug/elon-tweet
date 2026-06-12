@@ -1,0 +1,38 @@
+# ===========================================================================
+# render.yaml — Render Blueprint (Infrastructure as Code).
+# ===========================================================================
+# This provisions the ENTIRE app on Render from one file: a Postgres database
+# and a Docker web service, already wired together. In Render:
+#   New ➜ Blueprint ➜ pick this repo ➜ Apply.
+#
+# The web service builds the SAME Dockerfile you run locally, and the container
+# loads the schema on startup (setup-db.js), so there is no manual psql step.
+# Spec: https://render.com/docs/blueprint-spec
+# ===========================================================================
+
+databases:
+  - name: elon-tweet-db
+    databaseName: elon_tweet
+    plan: free          # Render's free Postgres (fine for a class project)
+    region: oregon
+
+services:
+  - type: web
+    name: elon-tweet
+    runtime: docker      # build from ./Dockerfile instead of a Node buildpack
+    plan: free
+    region: oregon       # same region as the database so they connect privately
+    dockerfilePath: ./Dockerfile
+    envVars:
+      # production turns on SSL for the database connection (see src/db.js).
+      - key: NODE_ENV
+        value: production
+      # Render injects the database's connection string automatically.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: elon-tweet-db
+          property: connectionString
+      # Render generates a strong random value and keeps it secret.
+      - key: SESSION_SECRET
+        generateValue: true
+    # NOTE: PORT is provided by Render automatically; the app reads it from env.

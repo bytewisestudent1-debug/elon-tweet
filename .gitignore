@@ -1,0 +1,19 @@
+# ===========================================================================
+# Files Git should NOT track.
+# ===========================================================================
+
+# Installed dependencies — anyone can recreate these with `npm install`.
+node_modules/
+
+# Secrets & local config. NEVER commit this (DB password, session secret).
+# The safe-to-share template is .env.example, which IS committed.
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/

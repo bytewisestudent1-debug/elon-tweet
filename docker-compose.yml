@@ -1,0 +1,58 @@
+# ===========================================================================
+# docker-compose.yml — run the WHOLE app (database + web server) in Docker.
+# ===========================================================================
+# One command to start everything:
+#
+#     docker compose up --build
+#
+# Then open http://localhost:3000. To stop: Ctrl+C, or `docker compose down`.
+#
+# Two services are defined below:
+#   db   -> PostgreSQL (the database)
+#   app  -> our Node + Express server (built from the Dockerfile)
+# ===========================================================================
+
+services:
+  # ------------------------------------------------------------------------
+  # The PostgreSQL database.
+  # ------------------------------------------------------------------------
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: elon_tweet
+    ports:
+      - "5432:5432" # expose to the host too, so GUI tools can connect if you like
+    volumes:
+      # Keep the data between restarts (named volume defined at the bottom).
+      # The schema itself is loaded by the app container on startup (it runs
+      # setup-db.js before the server), so both local and Render behave the same.
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # The app waits until this reports the database is actually ready.
+      test: ["CMD-SHELL", "pg_isready -U postgres -d elon_tweet"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ------------------------------------------------------------------------
+  # The Node + Express web server (built from ./Dockerfile).
+  # ------------------------------------------------------------------------
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      # NOTE: the host is "db" (the service name above), NOT localhost.
+      # Docker gives each service its own DNS name on the internal network.
+      DATABASE_URL: postgres://postgres:postgres@db:5432/elon_tweet
+      SESSION_SECRET: local-dev-secret-change-me
+    depends_on:
+      db:
+        condition: service_healthy # don't start app until db passes its healthcheck
+    restart: on-failure
+
+# Named volume where Postgres stores its data on your machine.
+volumes:
+  db-data:
