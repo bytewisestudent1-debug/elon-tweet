@@ -7,8 +7,8 @@
 
 /* Design tokens: change these to re-theme the whole app. */
 :root {
-  --accent: #1d9bf0;        /* Twitter-ish blue */
-  --accent-dark: #1a8cd8;
+  --accent: #7c3aed;        /* purple */
+  --accent-dark: #6d28d9;
   --bg: #f7f9f9;            /* page background */
   --card: #ffffff;          /* tweet/card background */
   --border: #e1e8ed;        /* hairline borders */
